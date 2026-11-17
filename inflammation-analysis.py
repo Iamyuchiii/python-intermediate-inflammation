@@ -5,7 +5,7 @@ import argparse
 import os
 
 from inflammation import models, views
-from inflammation.compute_data import analyse_data
+from inflammation.compute_data import analyse_data, CSVDataSource, JSONDataSource
 
 
 def main(args):
@@ -19,18 +19,32 @@ def main(args):
     if not isinstance(infiles, list):
         infiles = [args.infiles]
 
-
     if args.full_data_analysis:
-        analyse_data(os.path.dirname(infiles[0]))
+        data_dir = os.path.dirname(infiles[0])
+        _, extension = os.path.splitext(infiles[0])
+        data_loader_handler = {".json": JSONDataSource, ".csv": CSVDataSource}
+        data_loader = data_loader_handler.get(extension)
+        if data_loader is None:
+            raise ValueError(
+                f"This file {infiles[0]} extention is currently not supported"
+            )
+
+        data = data_loader(data_dir)
+        data_result = analyse_data(data)
+
+        graph_data = {
+            "standard deviation by day": data_result,
+        }
+        views.visualize(graph_data)
         return
 
     for filename in infiles:
         inflammation_data = models.load_csv(filename)
 
         view_data = {
-            'average': models.daily_mean(inflammation_data),
-            'max': models.daily_max(inflammation_data),
-            'min': models.daily_min(inflammation_data)
+            "average": models.daily_mean(inflammation_data),
+            "max": models.daily_max(inflammation_data),
+            "min": models.daily_min(inflammation_data),
         }
 
         views.visualize(view_data)
@@ -38,17 +52,18 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description='A basic patient inflammation data management system')
+        description="A basic patient inflammation data management system"
+    )
 
     parser.add_argument(
-        'infiles',
-        nargs='+',
-        help='Input CSV(s) containing inflammation series for each patient')
+        "infiles",
+        nargs="+",
+        help="Input CSV(s) containing inflammation series for each patient",
+    )
 
     parser.add_argument(
-        '--full-data-analysis',
-        action='store_true',
-        dest='full_data_analysis')
+        "--full-data-analysis", action="store_true", dest="full_data_analysis"
+    )
 
     args = parser.parse_args()
 
