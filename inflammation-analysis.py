@@ -19,6 +19,7 @@ def main(args):
     if not isinstance(infiles, list):
         infiles = [args.infiles]
 
+<<<<<<< HEAD
     if args.full_data_analysis:
         data_dir = os.path.dirname(infiles[0])
         _, extension = os.path.splitext(infiles[0])
@@ -39,13 +40,19 @@ def main(args):
         return
 
     for filename in infiles:
+=======
+    for filename in InFiles:
+>>>>>>> test-suite
         inflammation_data = models.load_csv(filename)
 
         view_data = {
             "average": models.daily_mean(inflammation_data),
             "max": models.daily_max(inflammation_data),
             "min": models.daily_min(inflammation_data),
+<<<<<<< HEAD
             **(models.standard_deviation(inflammation_data)),
+=======
+>>>>>>> test-suite
         }
 
         views.visualize(view_data)
@@ -61,10 +68,13 @@ if __name__ == "__main__":
         nargs="+",
         help="Input CSV(s) containing inflammation series for each patient",
     )
+<<<<<<< HEAD
 
     parser.add_argument(
         "--full-data-analysis", action="store_true", dest="full_data_analysis"
     )
+=======
+>>>>>>> test-suite
 
     args = parser.parse_args()
 

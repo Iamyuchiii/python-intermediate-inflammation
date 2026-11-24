@@ -11,6 +11,7 @@ import numpy as np
 import json
 
 
+<<<<<<< HEAD
 def load_json(filename):
     """Load a numpy array from a JSON document.
 
@@ -30,6 +31,8 @@ def load_json(filename):
         return [np.array(entry["observations"]) for entry in data_as_json]
 
 
+=======
+>>>>>>> test-suite
 def load_csv(filename):
     """Load a Numpy array from a CSV
 
@@ -51,8 +54,11 @@ def daily_max(data):
 def daily_min(data):
     """Calculate the daily min of a 2d inflammation data array."""
     return np.min(data, axis=0)
+<<<<<<< HEAD
 
 
 def standard_deviation(data):
     """Computes and returns standard deviation for data."""
     return {'standard deviation': np.std(data, axis=0)}
+=======
+>>>>>>> test-suite
